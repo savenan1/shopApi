@@ -19,7 +19,7 @@ class UserService
 
     public function logout($token){
         $session = RedisService::hGet(AppConfig::userSession, $token);
-        $session = json_decode($session);
+        $session = json_decode($session, true);
 
         $uid = $session['uid'];
 

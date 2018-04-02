@@ -23,7 +23,7 @@ class Util
         if ($data !== null) {
             $result['data'] = $data;
         }
-        $json = json_encode($result);
+        $json = json_encode($result, JSON_UNESCAPED_UNICODE);
 
         echo $json;
 

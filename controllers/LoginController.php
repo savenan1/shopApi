@@ -29,11 +29,7 @@ class LoginController extends BaseController
         $params = $this->postData;
         $userName = $params['userName'];
         $passWord = $params['passWord'];
-//        $verifyCode = $params['verifyCode'];
-//        $verifyCodeRedis = RedisService::hGet($userName, self::authCodeTTL);
-//        if ($verifyCode != $verifyCodeRedis) {
-//            return $this->renderJSON(-1001, 'verify code error');
-//        }
+
         $oldUser = User::find()->select('*')
             ->where(['FstrUserName' => $userName])->asArray()->one();
         if (!empty($oldUser)) {

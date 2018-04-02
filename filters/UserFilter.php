@@ -23,15 +23,15 @@ class UserFilter extends BaseFilter
 
     public function beforeAction($action)
     {
+        $data = \Yii::$app->request->post()?:json_decode(file_get_contents("php://input"),true);
+        $session = RedisService::hGet(AppConfig::userSession, $data['token']);
 
-        $session = RedisService::hGet(AppConfig::userSession, $this->token);
-        var_dump($this->token);exit;
         if(!isset($session)){
             Util::renderJSON(-401, '请登录');
         }
 
         $session = json_decode($session, true);
-        if($session['ttl'] > time()){
+        if($session['ttl'] <= time()){
             Util::renderJSON(-402, '请重新登录');
         }
 

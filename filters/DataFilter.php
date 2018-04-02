@@ -23,21 +23,12 @@ class DataFilter extends BaseFilter
     public function beforeAction($action)
     {
         $data = \Yii::$app->request->post()?:json_decode(file_get_contents("php://input"),true);
-//
-//        if (!isset($data['accessId']) || !isset($data['accessKey'])){
-//            Util::renderJSON(-403, 'permission denied');
-//        }
-//        //初始化请求需要的参数
-//        $this->accessId = $data['accessId'];
-//        $this->accessKey = $data['accessKey'];
-        $this->token = isset($data['token']) ? $data['token'] : '';
-        unset($data['token']);
-        var_dump($this->token);
         /** @var BaseController $c */
         $c = \Yii::$app->controller;
 
         $c->postData = $data;
-        $c->token = $this->token;
+        $c->token = isset($data['token']) ? $data['token'] : '';
+        unset($data['token']);
         return true;
     }
 }

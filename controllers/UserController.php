@@ -52,6 +52,8 @@ class UserController extends BaseController
     public function actionLogout(){
         $token = $this->token;
         $this->userService->logout($token);
+
+        return $this->renderJSON(0, 'ok');
     }
 
 
