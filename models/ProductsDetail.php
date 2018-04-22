@@ -41,7 +41,7 @@ class ProductsDetail extends Demo
         return [
             'FuiId' => '自增主键, 商品唯一编号',
             'FuiProductId' => '商品表主键',
-            'FuiStatus' => '商品状态 1 已上架,2 交易中,3 已出租,4 已出售,5 出租完处理中',
+            'FuiStatus' => '商品状态 0 已上架,1 交易中,2 已出租,3 已出售,4 出租完处理中',
             'FuiIsLock' => '是否锁定 防止并发修改 1 锁定,0 锁定',
             'FuiCreateTime' => '创建时间',
         ];

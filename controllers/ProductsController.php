@@ -37,96 +37,21 @@ class ProductsController extends BaseController
     {
         $params = $this->postData;
         if (!is_numeric($params['brandId'])) {
-            return $this->renderJSON(-1003, 'denied');
+            return $this->renderJSON(-1000, '参数错误');
         }
+
         $page = $params['page'];
         $query = Products::find()->select('*')
-            ->innerJoin('product_photo pp', 'pp.FuiSequenceNo=1 and pp.FuiProductId=products.FuiId')
             ->where(['FuiBrandId' => $params['brandId']])
             ->orderBy('product.FuiId desc');
         $offset = ($page - 1) * self::pageSize2;
         $data = $query->offset($offset)->limit(self::pageSize2)->asArray()->all();
+
         if (count($data) == 0) {
             return $this->renderJSON(-1, 'no data');
         }
-        return $this->renderJSON(0, 'success', $data);
-    }
 
-    /**
-     * 添加商品(包括图片)
-     */
-    public function actionAddProduct()
-    {
-        $params = $this->postData;
-        $token = $params['token'];
-        $uid = RedisService::getUidByToken($token);
-
-        $transaction = Products::getDb()->beginTransaction();
-        try {
-            $product = new Products();
-            $service = new QiniuService();
-            $product->FstrProductName = $params['FstrProductName'];
-            $product->FstrDetails = $params['FstrDetails'] ? $params['FstrDetails'] : '';
-            $product->FstrDescription = $params['FstrDescription'] ? $params['FstrDescription'] : '';
-            $product->FuiBuyPrice = $params['FuiBuyPrice'] ? $params['FuiBuyPrice'] : 0.00;
-            $product->FuiRentPrice = $params['FuiRentPrice'] ? $params['FuiRentPrice'] : 0.00;
-            $product->FuiUserId = $uid;
-            $product->FuiNum = $params['FuiNum'] ? $params['FuiNum'] : 1;
-            $product->FuiCreateTime = time();
-            $product->FuiCanRent = $params['FuiCanRent'] ? $params['FuiCanRent'] : 0;
-            $product->FuiAtLeastDays = $params['FuiAtLeastDays'] ? $params['FuiAtLeastDays'] : 0;
-            $product->FuiBrandId = $params['FuiBrandId'] ? $params['FuiBrandId'] : 0;
-
-            $productsUrl = [];
-
-//            foreach ($productPics as $v) {
-//                $fileName = time() . $v['name'];
-//                $result = $service->upload($fileName, $v['tmp_name']);
-//                if ($result['ret'] == 0) {
-//                    $url = $result['data']['url'];
-//                    $productsUrl[] = $url;
-//                } else {
-//                    throw new Exception('图片上传失败', -1003);
-//                }
-//            }
-
-            $product->FstrPhotoUrl = json_encode($productsUrl);
-
-            if (!$product->save()) {
-                return $this->renderJSON(-1004, '添加商品失败');
-            }
-            $transaction->commit();
-            return ['ret' => 0, 'msg' => '添加成功'];
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            return $this->renderJSON($e->getCode(), $e->getMessage());
-        }
-    }
-
-    /**
-     * 收藏商品
-     */
-    public function actionCollectProducts()
-    {
-        $data = \Yii::$app->request->post();
-        $productId = $data['pid'];
-        $uid = $data['uid'];
-        if (!$productId || !$uid) {
-            return $this->renderJSON(-1000, 'invalid params');
-        }
-        $user = User::find()->select('FuiUserId')
-            ->where(['FuiUserId' => $uid])->asArray()->one();
-        if (empty($user)) {
-            return $this->renderJSON(-1001, 'user not exist');
-        }
-        $productCollection = new ProductCollection();
-        $productCollection->FuiUserId = $uid;
-        $productCollection->FuiProductId = $productId;
-        $productCollection->FuiCreateTime = time();
-        if (!$productCollection->save()) {
-            return $this->renderJSON(-1002, '收藏失败');
-        }
-        return $this->renderJSON(0, 'success');
+        return $this->renderJSON(0, 'ok', $data);
     }
 
     /**
@@ -135,13 +60,14 @@ class ProductsController extends BaseController
     public function actionGetRecommendList()
     {
         $page = \Yii::$app->request->post('page');
-        $query = Recommend::find()->select('*');
+        $query = Recommend::find();
+
         $offset = ($page - 1) * self::pageSize;
-        $data = $query->offset($offset)->limit(self::pageSize)->all();
+        $data = $query->offset($offset)->limit(self::pageSize)->asArray()->all();
         if (empty($data)) {
             return $this->renderJSON(-1, 'no data');
         }
-        return $this->renderJSON(0, 'success', $data);
+        return $this->renderJSON(0, 'ok', $data);
     }
 
     /**
@@ -153,9 +79,10 @@ class ProductsController extends BaseController
         if (!is_numeric($recommendId)) {
             return $this->renderJSON(-1, '无效参数');
         }
+
         $recommendDetail = RecommendDetail::find()->select('*')
             ->where(['FuiRecommendId' => $recommendId])->all();
-        return $this->renderJSON(0, 'success', $recommendDetail);
+        return $this->renderJSON(0, 'ok', $recommendDetail);
     }
 
     /**
