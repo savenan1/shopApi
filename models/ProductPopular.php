@@ -13,7 +13,7 @@ use Yii;
  * @property integer $FuiSequence
  * @property integer $FuiCreateTime
  */
-class ProductPopular extends \yii\db\ActiveRecord
+class ProductPopular extends Demo
 {
     /**
      * @inheritdoc

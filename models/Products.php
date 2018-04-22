@@ -25,7 +25,7 @@ use Yii;
  * @property integer $FuiAtLeastDays
  * @property integer $FuiBrandId
  */
-class Products extends \yii\db\ActiveRecord
+class Products extends Demo
 {
     /**
      * @inheritdoc

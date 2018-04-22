@@ -13,7 +13,7 @@ use Yii;
  * @property integer $FuiIsLock
  * @property integer $FuiCreateTime
  */
-class ProductsDetail extends \yii\db\ActiveRecord
+class ProductsDetail extends Demo
 {
     /**
      * @inheritdoc

@@ -17,7 +17,7 @@ use Yii;
  * @property integer $FuiStatus
  * @property string $FstrMobile
  */
-class Address extends \yii\db\ActiveRecord
+class Address extends Demo
 {
     /**
      * @inheritdoc

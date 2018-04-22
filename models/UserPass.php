@@ -11,7 +11,7 @@ use Yii;
  * @property integer $FuiUserId
  * @property string $FstrUserPassWord
  */
-class UserPass extends \yii\db\ActiveRecord
+class UserPass extends Demo
 {
     /**
      * @inheritdoc

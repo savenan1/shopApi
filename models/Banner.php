@@ -14,7 +14,7 @@ use Yii;
  * @property integer $FuiUserId
  * @property integer $FuiCreateTime
  */
-class Banner extends \yii\db\ActiveRecord
+class Banner extends Demo
 {
     /**
      * @inheritdoc

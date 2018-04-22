@@ -15,7 +15,7 @@ use Yii;
  * @property integer $FuiPraiseNum
  * @property integer $FuiCreateTime
  */
-class Weibo extends \yii\db\ActiveRecord
+class Weibo extends Demo
 {
     /**
      * @inheritdoc

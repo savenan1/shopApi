@@ -12,7 +12,7 @@ use Yii;
  * @property integer $FuiFocusId
  * @property integer $FuiCreateTime
  */
-class WeiboRelationship extends \yii\db\ActiveRecord
+class WeiboRelationship extends Demo
 {
     /**
      * @inheritdoc

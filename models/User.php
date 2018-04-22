@@ -19,7 +19,7 @@ use Yii;
  * @property string $FstrUserIcon
  * @property string $FstrUserSignature
  */
-class User extends \yii\db\ActiveRecord
+class User extends Demo
 {
     /**
      * @inheritdoc

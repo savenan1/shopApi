@@ -14,7 +14,7 @@ use Yii;
  * @property string $FstrPhotoUrl
  * @property integer $FuiCreateTime
  */
-class RecommendDetail extends \yii\db\ActiveRecord
+class RecommendDetail extends Demo
 {
     /**
      * @inheritdoc

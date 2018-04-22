@@ -14,7 +14,7 @@ use Yii;
  * @property integer $FuiPraiseNum
  * @property integer $FuiCreateTime
  */
-class Recommend extends \yii\db\ActiveRecord
+class Recommend extends Demo
 {
     /**
      * @inheritdoc
