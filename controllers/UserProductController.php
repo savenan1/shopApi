@@ -41,33 +41,18 @@ class UserProductController extends BaseController
 
         $transaction = Products::getDb()->beginTransaction();
         try {
-            $service = new QiniuService();
-            $productPhoto = json_decode($params['productPhoto'], true);
-            $productsUrl = [];
-            foreach ($productPhoto as $v) {
-                $fileName = uniqid() . $v['name'];
-                $result = $service->upload($fileName, $v['value']);
-                if ($result['ret'] == 0) {
-                    $url = $result['data']['url'];
-                    $productsUrl[] = $url;
-                } else {
-                    throw new Exception('图片上传失败', -1003);
-                }
-            }
-
             $product = new Products();
-            $product->FstrProductName = $params['FstrProductName'];
-            $product->FstrDetails = $params['FstrDetails'] ? $params['FstrDetails'] : '';
-            $product->FstrDescription = $params['FstrDescription'] ? $params['FstrDescription'] : '';
-            $product->FuiBuyPrice = $params['FuiBuyPrice'] ? $params['FuiBuyPrice'] : 0.00;
-            $product->FuiRentPrice = $params['FuiRentPrice'] ? $params['FuiRentPrice'] : 0.00;
+            $product->FstrProductName = $params['productName'];
+            $product->FstrDetails = $params['productDetail'] ?: '';
+            $product->FstrDescription = $params['description'] ?: '';
+            $product->FuiBuyPrice = $params['buyPrice'] ?: 0;
+            $product->FuiRentPrice = $params['rentPrice'] ?: 0;
             $product->FuiUserId = $uid;
-            $product->FuiNum = $params['FuiNum'] ? $params['FuiNum'] : 1;
+            $product->FuiNum = $params['FuiNum'] ?: 1;
             $product->FuiCreateTime = time();
             $product->FuiCanRent = $params['FuiCanRent'] ? $params['FuiCanRent'] : 0;
             $product->FuiAtLeastDays = $params['FuiAtLeastDays'] ? $params['FuiAtLeastDays'] : 0;
             $product->FuiBrandId = $params['FuiBrandId'] ? $params['FuiBrandId'] : 0;
-            $product->FstrPhotoUrl = json_encode($productsUrl);
 
             if (!$product->save()) {
                 return $this->renderJSON(-1004, '添加商品失败');
@@ -78,6 +63,32 @@ class UserProductController extends BaseController
             $transaction->rollBack();
             return $this->renderJSON($e->getCode(), $e->getMessage());
         }
+    }
+
+    /**
+     * 收藏商品
+     */
+    public function actionCollectProducts()
+    {
+        $data = \Yii::$app->request->post();
+        $productId = $data['pid'];
+        $uid = $data['uid'];
+        if (!$productId || !$uid) {
+            return $this->renderJSON(-1000, 'invalid params');
+        }
+        $user = User::find()->select('FuiUserId')
+            ->where(['FuiUserId' => $uid])->asArray()->one();
+        if (empty($user)) {
+            return $this->renderJSON(-1001, 'user not exist');
+        }
+        $productCollection = new ProductCollection();
+        $productCollection->FuiUserId = $uid;
+        $productCollection->FuiProductId = $productId;
+        $productCollection->FuiCreateTime = time();
+        if (!$productCollection->save()) {
+            return $this->renderJSON(-1002, '收藏失败');
+        }
+        return $this->renderJSON(0, 'success');
     }
 
 }

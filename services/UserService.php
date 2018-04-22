@@ -17,7 +17,7 @@ class UserService
 
     }
 
-    public function logout($token){
+    public function logout(string $token){
         $session = RedisService::hGet(AppConfig::userSession, $token);
         $session = json_decode($session, true);
 
